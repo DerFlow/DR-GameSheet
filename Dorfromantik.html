@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Summarizer</title>
+    <style>
+        * {
+            font-family: Arial;
+        }
+        .container1, .container2, .containerE {
+            display: grid;
+            gap: 10px;
+            margin: left;
+            border-style: solid;
+            padding: 10px;
+        }
+        .container1 {
+            grid-template-columns: repeat(7, 1fr);
+        }
+        .container2 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .containerE {
+            grid-template-columns: repeat(7, 1fr);
+            text-align: left;
+			border-style: none;
+        }
+		.headline {
+			background-color: #424f1d;
+            color: white;
+            text-align: center;
+		}
+        .input-field {
+            padding: 10px;
+            text-align: justify;
+
+        }
+        .result-field {
+            padding: 10px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .readonly {
+            background-color: #e0e0e0;
+			font-size: 30px;
+        }
+        body {
+            background-color: #838a3d;
+        }
+        h3 {
+            background-color: #424f1d;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container1">
+	<div class="headline">
+		<a>Round</a>
+		<input type="number" id="A" class="input-field">
+	</div>
+	<div class="headline">
+		<h3>Forest</h3>
+	</div>
+	<div class="headline">
+		<h3>Field</h3>
+	</div>
+	<div class="headline">
+		<h3>Village</h3>
+	</div>
+	<div class="headline">
+		<h3>Railway</h3>
+	</div>
+	<div class="headline">
+		<h3>River</h3>
+	</div>
+	<div class="headline">
+		<h3>Totals</h3>
+	</div>
+	<div class="headline">
+		<h3>Tasks</h3>
+	</div>
+    <input type="number" id="B1" class="input-field" oninput="calculateAll()">
+    <input type="number" id="B2" class="input-field" oninput="calculateAll()">
+    <input type="number" id="B3" class="input-field" oninput="calculateAll()">
+    <input type="number" id="B4" class="input-field" oninput="calculateAll()">
+    <input type="number" id="B5" class="input-field" oninput="calculateAll()">
+    <div id="S1" class="result-field readonly">0</div>
+	<div class="headline">
+		<h3>Flags</h3>
+	</div>
+    <input type="number" id="C1" class="input-field" oninput="calculateAll()">
+    <input type="number" id="C2" class="input-field" oninput="calculateAll()">
+    <input type="number" id="C3" class="input-field" oninput="calculateAll()">
+	<div class="headline">
+		<a>Longest</a>
+		<input type="number" id="D1" class="input-field" oninput="calculateAll()">
+	</div>
+	<div class="headline">
+		<a>Longest</a>
+		<input type="number" id="D2" class="input-field" oninput="calculateAll()">
+	</div>
+    <div id="S2" class="result-field readonly">0</div>
+</div>
+<br>
+
+<div style="border-style: solid">
+	<div class="headline">
+		<h3>Unlocked</h3>
+	</div>
+	<div class="containerE">
+		
+		<div class="input-field" style="grid-column: span 3; border-style: solid; background-color: #cbd65e">
+			<input type="checkbox" id="redHearts" onclick="toggleInput('redHeartsInput')"> <label for="redHearts">Red Hearts (1/matching edge)</label>
+			<input type="number" id="redHeartsInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="circus" onclick="toggleInput('circusInput')"> <label for="circus">Circus (completely surrounded = 10)</label>
+			<input type="number" id="circusInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="signalman" onclick="toggleInput('signalmanInput')"> <label for="signalman">Signalman (2/Grade Crossing)</label>
+			<input type="number" id="signalmanInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="shepherdess" onclick="toggleInput('shepherdessInput')"> <label for="shepherdess">Shepherdess (1/Sheep)</label>
+			<input type="number" id="shepherdessInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="hill" onclick="toggleInput('hillInput')"> <label for="hill">Hill (at distance 2 = 2/Task tile)</label>
+			<input type="number" id="hillInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="constructionSite" onclick="toggleInput('constructionSiteInput')"> <label for="constructionSite">Construction Site (per territory 7+ = 7)</label>
+			<input type="number" id="constructionSiteInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="balloonLaunchSite" onclick="toggleInput('balloonLaunchSiteInput')"> <label for="balloonLaunchSite">Balloon Launch Site (2/distance)</label>
+			<input type="number" id="balloonLaunchSiteInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="goldenHeart" onclick="toggleInput('goldenHeartInput')"> <label for="goldenHeart">Golden Heart (2/matching edge)</label>
+			<input type="number" id="goldenHeartInput" class="input-field" disabled oninput="calculateAll()"><br>
+		</div>
+		<div class="input-field" style="grid-column: span 3; border-style: solid; background-color: #cbd65e">
+			<input type="checkbox" id="forestCabin" onclick="toggleInput('forestCabinInput')"> <label for="forestCabin">Forest Cabin (Tasks)</label>
+			<input type="number" id="forestCabinInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="harvestFestival" onclick="toggleInput('harvestFestivalInput')"> <label for="harvestFestival">Harvest Festival (Tasks)</label>
+			<input type="number" id="harvestFestivalInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="watchtower" onclick="toggleInput('watchtowerInput')"> <label for="watchtower">Watchtower (Tasks)</label>
+			<input type="number" id="watchtowerInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="locomotive" onclick="toggleInput('locomotiveInput')"> <label for="locomotive">Locomotive (Tasks)</label>
+			<input type="number" id="locomotiveInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="ship" onclick="toggleInput('shipInput')"> <label for="ship">Ship (Tasks)</label>
+			<input type="number" id="shipInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="trainStation" onclick="toggleInput('trainStationInput')"> <label for="trainStation">Train Station (closed off = 1/tile)</label>
+			<input type="number" id="trainStationInput" class="input-field" disabled oninput="calculateAll()"><br>
+			<input type="checkbox" id="harbor" onclick="toggleInput('harborInput')"> <label for="harbor">Harbor (closed off = 1/tile)</label>
+			<input type="number" id="harborInput" class="input-field" disabled oninput="calculateAll()"><br>
+		</div>
+		<div style="background-color: #424f1d; border-style: solid; width: 100%">
+			<h3>Total</h3>
+			<div id="S3" class="result-field readonly">0</div>
+		</div>
+	</div>
+	<br>
+</div>
+<br>
+<div class="containerE">
+    <div class="input-field" style="grid-column: span 3;">Player Names</div>
+    <div class="input-field" style="grid-column: span 3;">Date</div>
+	<div class="headline">
+		<h3>Result: <div id="result" class="result-field readonly" style="color: black; font-size: 40px;">0</div></h3>	
+	</div>
+</div>
+
+<script type="text/javascript">
+
+function calculateAll() {
+    calculateS1();
+    calculateS2();
+    calculateS3();
+    calculateResult();
+}
+
+function calculateS1() {
+    const B1 = parseFloat(document.getElementById('B1').value) || 0;
+    const B2 = parseFloat(document.getElementById('B2').value) || 0;
+    const B3 = parseFloat(document.getElementById('B3').value) || 0;
+    const B4 = parseFloat(document.getElementById('B4').value) || 0;
+    const B5 = parseFloat(document.getElementById('B5').value) || 0;
+
+    const S1 = B1 + B2 + B3 + B4 + B5;
+    document.getElementById('S1').textContent = S1;
+}
+
+function calculateS2() {
+    const C1 = parseFloat(document.getElementById('C1').value) || 0;
+    const C2 = parseFloat(document.getElementById('C2').value) || 0;
+    const C3 = parseFloat(document.getElementById('C3').value) || 0;
+    const D1 = parseFloat(document.getElementById('D1').value) || 0;
+    const D2 = parseFloat(document.getElementById('D2').value) || 0;
+
+    const S2 = C1 + C2 + C3 + D1 + D2;
+    document.getElementById('S2').textContent = S2;
+}
+
+function calculateS3() {
+    const checkboxes = [
+        'redHearts', 'circus', 'signalman', 'shepherdess', 'hill', 'constructionSite', 'balloonLaunchSite', 'goldenHeart',
+        'forestCabin', 'harvestFestival', 'watchtower', 'locomotive', 'ship', 'trainStation', 'harbor'
+    ];
+
+    let S3 = 0;
+    checkboxes.forEach(checkboxId => {
+        const checkbox = document.getElementById(checkboxId);
+        const input = document.getElementById(checkboxId + 'Input');
+
+        if (checkbox.checked) {
+            S3 += parseFloat(input.value) || 0;
+        }
+    });
+
+    document.getElementById('S3').textContent = S3;
+}
+
+function calculateResult() {
+    const S1 = parseFloat(document.getElementById('S1').textContent) || 0;
+    const S2 = parseFloat(document.getElementById('S2').textContent) || 0;
+    const S3 = parseFloat(document.getElementById('S3').textContent) || 0;
+
+    const result = S1 + S2 + S3;
+    document.getElementById('result').textContent = result;
+}
+
+function toggleInput(inputId) {
+    const inputElement = document.getElementById(inputId);
+    inputElement.disabled = !inputElement.disabled;
+    if (inputElement.disabled) {
+        inputElement.value = ''; // Clear the input value when disabling
+    }
+    calculateAll(); // Recalculate all fields after toggling
+}
+
+
+
+</script>
+
+</body>
+</html>
